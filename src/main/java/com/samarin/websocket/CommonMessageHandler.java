@@ -32,8 +32,6 @@ public class CommonMessageHandler implements WebSocketHandler, ResponseMessageAc
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
-
-
         String textMessage = message.getPayload().toString();
         log.info("handleMessage" + textMessage);
         Message messageEntity = gson.fromJson(textMessage, Message.class);

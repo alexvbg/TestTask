@@ -2,8 +2,11 @@ package com.samarin.websocket;
 
 import java.util.Map;
 
-public interface ResponseMessageAccumulator<K, V> {
+/**
+ * Interface which says that the handler accumulates responses from the server.
+ * Can be used for customization of response processors in test framework
+ */
+public interface ResponseMessageAccumulator {
 
-  Map<K, V> getResponses();
-
+    Map getResponses();
 }

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration scan="true" scanPeriod="60 seconds">
+
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:ENVELOPE</Marker>
+        <!--<OnMatch>ACCEPT</OnMatch>-->
+        <OnMatch>DENY</OnMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:SERVICE_TIME</Marker>
+        <OnMatch>DENY</OnMatch>
+        <!--<OnMatch>ACCEPT</OnMatch>-->
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:SERVICE_MSG</Marker>
+        <!--<OnMatch>DENY</OnMatch>-->
+        <OnMatch>ACCEPT</OnMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:RESOURCE</Marker>
+        <!--<OnMatch>DENY</OnMatch>-->
+        <OnMatch>DENY</OnMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:MESSAGES</Marker>
+        <!--<OnMatch>DENY</OnMatch>-->
+        <OnMatch>ACCEPT</OnMatch>
+    </turboFilter>
+    <turboFilter class="ch.qos.logback.classic.turbo.MarkerFilter">
+        <Marker>STAT:PRCTIME</Marker>
+        <!--<OnMatch>DENY</OnMatch>-->
+        <OnMatch>ACCEPT</OnMatch>
+    </turboFilter>
+
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level [%file:%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="INFO">
+        <!--<appender-ref ref="DEBUGFILE"/>-->
+        <!--<appender-ref ref="ERRORFILE"/>-->
+        <!--<appender-ref ref="TOTALFILE"/>-->
+        <!--<appender-ref ref="FATALERRORMESSAGEFILE"/>-->
+        <!--<appender-ref ref="JSONL-LOG"/>-->
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

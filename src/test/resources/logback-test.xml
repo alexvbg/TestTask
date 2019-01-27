@@ -40,12 +40,7 @@
         </encoder>
     </appender>
 
-    <root level="INFO">
-        <!--<appender-ref ref="DEBUGFILE"/>-->
-        <!--<appender-ref ref="ERRORFILE"/>-->
-        <!--<appender-ref ref="TOTALFILE"/>-->
-        <!--<appender-ref ref="FATALERRORMESSAGEFILE"/>-->
-        <!--<appender-ref ref="JSONL-LOG"/>-->
+    <root level="DEBUG">
         <appender-ref ref="STDOUT"/>
     </root>
 

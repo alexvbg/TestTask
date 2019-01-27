@@ -9,4 +9,6 @@ import java.util.Map;
 public interface ResponseMessageAccumulator {
 
     Map getResponses();
+
+    void clearResponses();
 }

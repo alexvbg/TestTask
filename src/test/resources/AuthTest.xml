@@ -1,0 +1,28 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="Authentication suite" verbose="1">
+    <test name="Authentication test">
+        <classes>
+            <class name="com.samarin.AuthTest">
+                <parameter name="restAuthUrl" value="https://auth.iqoption.com/api/v1.0/login?email={email}&amp;password={password}"/>
+                <parameter name="websocketUrl" value="wss://iqoption.com/echo"/>
+                <parameter name="messageAccumulationTimeout" value="4"/>
+                <parameter name="deltaForTimeSyncResponses" value="500"/>
+                <parameter name="email" value="samarinalex47@gmail.com"/>
+                <parameter name="password" value="clanwar1993"/>
+                <methods>
+                    <include name="positiveAuth">
+                        <parameter name="pathToSchema" value="auth_json_schemas/success_schema.json"/>
+                    </include>
+                    <include name="negativeSendGoodAndBadSsid">
+                        <parameter name="pathToSchema" value="auth_json_schemas/success_schema.json"/>
+                    </include>
+                    <include name="negativeSendBadSsid"/>
+                    <include name="authenticateWithBadCredentials">
+                        <parameter name="pathToSchema" value="auth_json_schemas/error_schema.json"/>
+                    </include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

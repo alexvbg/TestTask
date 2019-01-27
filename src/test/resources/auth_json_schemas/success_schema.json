@@ -1,0 +1,32 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "data"
+  ],
+  "properties": {
+    "data": {
+      "$id": "#/properties/data",
+      "type": "object",
+      "title": "The Data Schema",
+      "required": [
+        "ssid"
+      ],
+      "properties": {
+        "ssid": {
+          "$id": "#/properties/data/properties/ssid",
+          "type": "string",
+          "title": "The Ssid Schema",
+          "default": "",
+          "examples": [
+            "3d9d031cd3bd0557959c3c330b203a0e"
+          ],
+          "pattern": "^(.*)$"
+        }
+      }
+    }
+  }
+}

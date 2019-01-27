@@ -1,0 +1,47 @@
+{
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://example.com/root.json",
+  "type": "object",
+  "title": "The Root Schema",
+  "required": [
+    "errors"
+  ],
+  "properties": {
+    "errors": {
+      "$id": "#/properties/errors",
+      "type": "array",
+      "title": "The Errors Schema",
+      "items": {
+        "$id": "#/properties/errors/items",
+        "type": "object",
+        "title": "The Items Schema",
+        "required": [
+          "code",
+          "title"
+        ],
+        "properties": {
+          "code": {
+            "$id": "#/properties/errors/items/properties/code",
+            "type": "integer",
+            "title": "The Code Schema",
+            "default": 0,
+            "examples": [
+              1
+            ]
+          },
+          "title": {
+            "$id": "#/properties/errors/items/properties/title",
+            "type": "string",
+            "title": "The Title Schema",
+            "default": "",
+            "examples": [
+              "Invalid email"
+            ],
+            "pattern": "^(.*)$"
+          }
+        }
+      }
+    }
+  }
+}

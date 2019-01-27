@@ -8,8 +8,8 @@ import static com.samarin.utils.AuthRestConstants.PASSWORD_KEY;
 import static com.samarin.utils.AuthRestConstants.SUCCESS_STATUS;
 import static io.restassured.RestAssured.given;
 import static io.restassured.module.jsv.JsonSchemaValidator.matchesJsonSchemaInClasspath;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotEquals;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 
 import com.google.gson.Gson;
@@ -23,11 +23,9 @@ import io.qameta.allure.Step;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterMethod;
@@ -37,7 +35,7 @@ import org.testng.annotations.Test;
 
 
 @Slf4j
-public class AuthTest {
+public class AuthenticationTest {
 
   private IQOptionWebSocketClient webSocketClient;
   private RequestSpecification requestSpecification;
@@ -81,6 +79,9 @@ public class AuthTest {
   @AfterMethod
   public void clearResponses() throws IQOptionWebSocketClientException {
     webSocketClient.clearResponses();
+    if (webSocketClient.isConnectionOpen()) {
+      webSocketClient.close();
+    }
   }
 
   @Step("Authenticate with email = {email}, password = {password}, and assert response status code = {statusCode} schema by path = {pathToSchema}")
@@ -186,8 +187,8 @@ public class AuthTest {
   }
 
   /**
-   * Negative test, send bad ssid to websocket. Flaky test, may return {name:profile, msg:false},
-   * but often return nothing Didn't close connection after this test method, because connection
+   * Negative test, send bad ssid to websocket. Flaky test, server may return {name:profile, msg:false},
+   * but often return nothing. Didn't close connection after this test method, because connection
    * closed with status - 1006 and reason - 'Closed abnormally'.
    */
   @Test
@@ -197,9 +198,7 @@ public class AuthTest {
     webSocketClient.connectAndWait(websocketUrl);
     sendAuthSsidToWebsocketServer(BAD_SSID);
     TimeUnit.SECONDS.sleep(messageAccumulationTimeout);
-    List<Message> profile = (List<Message>) Optional
-        .ofNullable(webSocketClient.getResponses().get("profile"))
-        .orElse(Collections.singletonList(Message.builder().name("profile").msg("false").build()));
-    assertEquals(profile.get(0).getMsg(), "false", "Received a profile by sending a bad ssid");
+    Object profile = webSocketClient.getResponses().get("profile");
+    assertNull(profile, "Received a profile by sending a bad ssid");
   }
 }

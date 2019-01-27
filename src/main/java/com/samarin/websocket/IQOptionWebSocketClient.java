@@ -80,6 +80,11 @@ public class IQOptionWebSocketClient {
     }
   }
 
+
+  public boolean isConnectionOpen() {
+    return session.isOpen();
+  }
+
   /**
    * Method allows you to send a text message to the channel.
    * Session may not be set yet, therefore used Optional.ofNullable

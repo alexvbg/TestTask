@@ -30,6 +30,7 @@ import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Parameters;
 import org.testng.annotations.Test;
 
@@ -70,10 +71,23 @@ public class AuthenticationTest {
     requestSpecBuilder.setAccept(ACCEPT_JSON);
     requestSpecification = requestSpecBuilder.build();
     gson = new Gson();
+    webSocketClient.connectAndWait(websocketUrl);
   }
 
   /**
-   * Clear responses that accumulated in websocket client after test methods
+   * Create connection to websocket server
+   */
+  @Description(useJavaDoc = true)
+  @BeforeMethod
+  public void openConnection() throws IQOptionWebSocketClientException {
+    if (!webSocketClient.isConnectionOpen()) {
+      webSocketClient.connectAndWait(websocketUrl);
+    }
+  }
+
+  /**
+   * Clear responses that accumulated in websocket client after test methods, close websocket
+   * connection
    */
   @Description(useJavaDoc = true)
   @AfterMethod
@@ -126,7 +140,6 @@ public class AuthenticationTest {
   @Parameters({"email", "password", "pathToSchema"})
   public void positiveAuth(String email, String password, String pathToSchema)
       throws InterruptedException, IQOptionWebSocketClientException {
-    webSocketClient.connectAndWait(websocketUrl);
     Response response = authentificateAndAssertResponseSchema(email, password, pathToSchema,
         SUCCESS_STATUS);
     SuccessAuthResponse authResponse = response.getBody().as(SuccessAuthResponse.class);
@@ -138,7 +151,6 @@ public class AuthenticationTest {
     assertTrue(responses.keySet().stream().anyMatch(o -> o.equals("profile")),
         "Didn't get a profile");
     assertTimeSyncFrequency((List<Message>) responses.get("timeSync"));
-    webSocketClient.close();
   }
 
   /**
@@ -167,7 +179,6 @@ public class AuthenticationTest {
   @Parameters({"email", "password", "pathToSchema"})
   public void negativeSendGoodAndBadSsid(String email, String password, String pathToSchema)
       throws InterruptedException, IQOptionWebSocketClientException {
-    webSocketClient.connectAndWait(websocketUrl);
     Response response = authentificateAndAssertResponseSchema(email, password, pathToSchema,
         SUCCESS_STATUS);
     SuccessAuthResponse authResponse = response.getBody().as(SuccessAuthResponse.class);
@@ -181,21 +192,19 @@ public class AuthenticationTest {
     webSocketClient.clearResponses();
     sendAuthSsidToWebsocketServer(BAD_SSID);
     TimeUnit.SECONDS.sleep(messageAccumulationTimeout);
-    webSocketClient.close();
     assertTrue(responses.keySet().stream().noneMatch(o -> o.equals("profile")),
         "Received a profile by sending a bad ssid");
   }
 
   /**
-   * Negative test, send bad ssid to websocket. Flaky test, server may return {name:profile, msg:false},
-   * but often return nothing. Didn't close connection after this test method, because connection
-   * closed with status - 1006 and reason - 'Closed abnormally'.
+   * Negative test, send bad ssid to websocket. Flaky test, server may return {name:profile,
+   * msg:false}, but often return nothing. Didn't close connection after this test method, because
+   * connection closed with status - 1006 and reason - 'Closed abnormally'.
    */
   @Test
   @Flaky
   @Description(useJavaDoc = true)
   public void negativeSendBadSsid() throws InterruptedException, IQOptionWebSocketClientException {
-    webSocketClient.connectAndWait(websocketUrl);
     sendAuthSsidToWebsocketServer(BAD_SSID);
     TimeUnit.SECONDS.sleep(messageAccumulationTimeout);
     Object profile = webSocketClient.getResponses().get("profile");
